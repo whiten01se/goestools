@@ -262,7 +262,8 @@ void Monitor::print(const Stats& stats) {
   ss << "drops: "
      << std::setw(packetWidth)
      << stats.totalDropped;
-  std::cout << ss.str() << std::endl;
+  //std::cout << ss.str() << std::endl;
+  std::cout << ss.str() << "\r" << std::flush << "\033[K";
 }
 
 void Monitor::start() {
