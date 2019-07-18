@@ -24,9 +24,18 @@ int getChannelFromFileName(const std::string& fileName) {
   int mode = -1;
   int channel = -1;
   auto rv = sscanf(parts[3].c_str(), "M%dC%02d", &mode, &channel);
+  
+  // Fixing the G16 channel change in file name
+  if(rv == 1)
+  {
+      std::cout << "Encountered new file name format. Fixing...\n";
+      rv = sscanf(parts[3].c_str(), "M%d_G%02d", &mode, &channel);
+      std::cout << "Fixed mode:channel: " << mode << ":" << channel << "\n";
+  }
+  
   ASSERTM(
     rv == 2,
-    "Expected to extract mode and channel from file name (", fileName, ")");
+    "Expected to extract mode and channel from file name (", fileName, "), but got ", parts[3].c_str(), ".");
   return channel;
 }
 
@@ -120,10 +129,17 @@ GOESRProduct::Details loadDetails(const lrit::File& f) {
       details.region.nameShort = "M1";
     } else if (parts[2] == "CMIPM2") {
       details.region.nameLong = "Mesoscale 2";
-      details.region.nameShort = "M2";
-    } else {
+      details.region.nameShort = "M2";      
+    } else if (parts[2] == "RRQPEF") { // M6_G16_ new file name type
+        details.region.nameLong = "Full disk";
+        details.region.nameShort = "FD";
+        std::cout << "New region RRQPEF found\n";
+    }
+    else {
       std::cerr << "Unable to derive region from: " << parts[2] << std::endl;
-      ASSERT(false);
+      details.region.nameLong = "Unknown";
+      details.region.nameShort = "UN";
+      //ASSERT(false);
     }
   }
 
