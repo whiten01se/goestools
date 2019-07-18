@@ -130,12 +130,7 @@ GOESRProduct::Details loadDetails(const lrit::File& f) {
     } else if (parts[2] == "CMIPM2") {
       details.region.nameLong = "Mesoscale 2";
       details.region.nameShort = "M2";      
-    } else if (parts[2] == "RRQPEF") { // M6_G16_ new file name type
-        details.region.nameLong = "Full disk";
-        details.region.nameShort = "FD";
-        std::cout << "New region RRQPEF found\n";
-    }
-    else {
+    } else {
       std::cerr << "Unable to derive region from: " << parts[2] << std::endl;
       details.region.nameLong = "Unknown";
       details.region.nameShort = "UN";
